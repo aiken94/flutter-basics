@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const String appTitle = 'Form Field Focus';
+const String appTitle = 'Form Field Change Handling';
 
 void main() => runApp(const MyApp());
 
@@ -27,54 +27,48 @@ class MyCustomForm extends StatefulWidget {
 }
 
 class _MyCustomFormState extends State<MyCustomForm> {
-  late FocusNode myFocusNode;
+  final myController = TextEditingController();
 
+  // INIT
   @override
   void initState() {
     super.initState();
 
-    myFocusNode = FocusNode();
+    myController.addListener(_printLatestValue);
   }
 
+  // DISPOSE
   @override
   void dispose() {
-    myFocusNode.dispose();
-
+    myController.dispose();
     super.dispose();
+  }
+
+  // METHOD/FUNCTION void _printLatestValue
+  void _printLatestValue() {
+    print('Second field updated: ${myController.text}');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(appTitle),
-        centerTitle: true,
+        title: const Text('App Bar'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const TextField(
-              decoration: InputDecoration(hintText: 'Auto Focus is true'),
-              autofocus: true,
+            TextField(
+              onChanged: (value) {
+                print('First Text Field $value');
+              },
             ),
             TextField(
-              decoration:
-                  const InputDecoration(hintText: 'FocusNode Connected'),
-              focusNode: myFocusNode,
-            ),
-            const TextField(
-              decoration: InputDecoration(hintText: 'INPUT THREE'),
+              controller: myController,
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          myFocusNode.requestFocus();
-        },
-        tooltip: 'Click me for focus on box two!',
-        child: const Icon(Icons.star),
       ),
     );
   }
